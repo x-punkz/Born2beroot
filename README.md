@@ -1,6 +1,6 @@
 *This project has been created as part of the 42 curriculum by daniviei*
 
-Description:
+# Description:
 
 	  Born2beroot is a project aimed at creating a server within a virtual machine.
 	Therefore, we will not use graphical interface.
@@ -15,7 +15,7 @@ Description:
 
 *preciso colocar as comparaçoes e oq instalei como dito na ultima parte da descriçao do PDF.
 
-instructions:
+# instructions:
 
 	Create Machine:
 	   For create the machine, download the ISO of the most current and stable version of
@@ -40,7 +40,7 @@ instructions:
     - Create a username and then a password for this user.
     - Set the time based on your location.
     
-    Partition disks:
+     Partition disks:
         In this section, select Manual to partition the disk manually.
         Set the size for each partition.
     
@@ -55,4 +55,4 @@ instructions:
         Confirm that you have typed it correctly by checking ‘show password’ and confirm.
 
 
-Resources:
+# Resources:
