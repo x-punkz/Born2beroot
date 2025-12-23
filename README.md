@@ -1,58 +1,124 @@
-*This project has been created as part of the 42 curriculum by daniviei*
+*This project has been created as part of the 42 curriculum by daniviei*.
 
 # Description:
 
-	  Born2beroot is a project aimed at creating a server within a virtual machine.
-	Therefore, we will not use graphical interface.
+## Born2beRoot
+Este projeto consiste na criação e configuração de um servidor virtual seguindo regras estritas
+de administração de sistemas. O objetivo é introduzir conceitos de virtualização, particionamento
+de disco com LVM, criptografia, políticas de segurança e automação via scripts.
 
-	In this project, I used Debian OS and did all the memory partitioning manually,
-		using LVM (Logical Volume Manager).
-	In it, i also configure the superuser (sudo), add a strong password
-		policy, change the ssh port and activate it, and also configure the firewall
-		using UFW.
-	In addition, I also create a bash script to show some machine settings to all users
-		and use crontab to display this configuration every 10 minutes.
+### Escolha do Sistema Operacional: Debian vs Rocky Linux
 
-*preciso colocar as comparaçoes e oq instalei como dito na ultima parte da descriçao do PDF.
+Para este projeto, foi escolhido o **Debian**.
 
-# instructions:
+**Debian:** Recomendado para iniciantes por sua estabilidade e facilidade de gerenciamento de pacotes (`apt`).
 
-	Create Machine:
-	   For create the machine, download the ISO of the most current and stable version of
-		Debian at https://www.debian.org/distrib/netinst and click on amd64 (standard
-		architecture for PCs, notebooks, and servers).
-	- Download or open VirtualBox (software for creating virtual machines).
-	- Click ‘new’ to add a new machine.
-	- Click on expertMode.
-	- Set a name for the machine, the location to store it, and place the ISO you downloaded.
-	- Click on hardware and set the memory to 2048 and the CPU to 4.
-	- Click on ‘HardDisk’, then ‘Create a virtual hard disk now’, edit the ‘hard disk file
-		location: debian_server.vdi’, change it to 30 GB and click on finish.
+ 
+**Rocky Linux:** Uma alternativa empresarial baseada no RHEL. Embora robusto para ambientes empresariais,
+ requer configuração complexa de SELinux e não possui suporte oficial para AppArmor nativamente.
 
-    Starting the machine:
-        When starting the machine, select ‘install’ and continue.
-    - Select the language, country, locale, and keyboard layout.
-    - After installation, on the 'hostname' screen, enter the hostname for the machine.
-    - On the 'domain' screen, unless you are trying to set a domain for this machine, you can
-        leave it blank.
-    - Create a password for ROOT (the system administrator). To view it, simply go to 
-        ‘show password’ and select it with the ‘space’ key.
-    - Create a username and then a password for this user.
-    - Set the time based on your location.
-    
-     Partition disks:
-        In this section, select Manual to partition the disk manually.
-        Set the size for each partition.
-    
-    Encrypt volumes:
-        After creating the partitions,
-    - select ‘Configure encrypted volumes’ to encrypt the created partitions, and select yes.
-    - Select ‘Create encrypted volume’.
-    - Select ‘/dev/sda2’ (which has 31.7 GB after the partitions are created) using the 'space',
-        then ‘done setting’ and finally ‘Finish’.
-     - Select yes for the message.
-    - Now we will set the password for partition encryption.
-        Confirm that you have typed it correctly by checking ‘show password’ and confirm.
+---
 
+## Security
+
+### Particionamento e Criptografia (LVM)
+
+Seguindo os requisitos obrigatórios e de bônus, o disco foi estruturado utilizando 
+**LVM (Logical Volume Manager)** sobre uma camada de **Criptografia**.
+
+**Criptografia:** O uso de 7 partições criptografadas garante que os dados estejam protegidos contra
+ acesso físico não autorizado.
+
+* 
+**Estrutura de 7 Partições (Bonus):** O disco foi dividido para otimizar o uso e a segurança, evitando
+que o preenchimento de uma partição (como logs) derrube o sistema inteiro.
+
+* 
+`/boot`: Inicialização do sistema (fora do LVM).
+
+* `LVM - root (/)`: Arquivos do sistema operacional.
+* `LVM - home`: Dados dos usuários.
+* `LVM - swap`: Memória virtual.
+* `LVM - var`: Dados variáveis de serviços.
+* `LVM - srv`: Dados de serviços específicos.
+* `LVM - tmp`: Arquivos temporários.
+* `LVM - var/log`: Armazenamento de logs (isolado para segurança).
+
+### Políticas de Segurança
+* 
+**Firewall (UFW):** Com as portas porta **4242** e **80** abertas.
+
+* 
+**SSH:** Configurado para acesso apenas em portas não-padrão (4242) e com login de `root` desativado.
+
+* 
+**Sudo:** Limite de 3 tentativas, mensagens de erro personalizadas e arquivamento completo (input/output)
+ em `/var/log/sudo/`.
+
+* 
+**Senha Forte:** Expiração a cada 30 dias, mínimo de 10 caracteres, exigência de letras e números, e limite de
+repetição de caracteres.
+    * O limeite de repetiçao de caracteres nao se aplica ao root. 
+
+---
+
+# Instructions:
+
+### Como rodar
+
+1. Baixe o arquivo `signature.txt` do repositório.
+* 
+2. Verifique a assinatura do seu disco virtual para garantir que coincide com o arquivo entregue:
+
+    * Use `sha1sum seu_disco.vdi`. Para pegar a asssinatura da máquina para fazer a comparação.
+* 
+3. Inicie uma cópia da VM no VirtualBox.
+* 
+4. O script `monitoring.sh` iniciará automaticamente via `cron` e exibirá informações a cada 10 minutos.
+
+---
+
+# Bonus Part:
+
+Este projeto inclui a implementação completa dos bônus:
+
+1. **Particionamento Avançado:** Uso de volumes lógicos detalhados (7 partições).
+
+2. **WordPress:** Site funcional utilizando a stack **Lighttpd, MariaDB e PHP**.
+
+3. **Serviço Extra:** Configuração do serviço **Fail2Ban** para reforçar a segurança do servidor.
+    Este serviço evita ataque de brute force na porta ssh, banindo o ip atacante depois de um limite de
+tentativas.
+
+---
 
 # Resources:
+
+* 
+ **Recursos:** Manuais do Debian, tutoriais de LVM e documentação oficial do WordPress.
+
+**Man pages:** `ufw`, `sudoers`, `crontab`, `lsblk`.
+
+**Uso de IA:** A IA foi utilizada apenas para auxiliar na estruturação deste documento.
+
+
+# Comparations:
+
+| Comparação | Descrição Breve |
+| --- | --- |
+
+| | **AppArmor vs SELinux**     
+* AppArmor (Debian) é baseado em caminhos de arquivos;
+* SELinux (Rocky) é baseado em rótulos (labels) de segurança e políticas mais rígidas.
+
+ |
+| **UFW vs Firewalld**
+* UFW é simplificado (Debian), que simplifica o iptables ;
+* Firewalld (Rocky) é baseado em zonas dinâmicas é o padrão em sistemas baseados em RHEL.
+
+ |
+| **VirtualBox vs UTM** 
+* VirtualBox é nativo para sistemas x86;
+* UTM é é a alternativa principal e otimizada para arquitetura Apple Silicon (M1/M2).
+
+---
